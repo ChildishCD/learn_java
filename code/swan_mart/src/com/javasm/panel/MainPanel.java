@@ -5,6 +5,7 @@ import com.javasm.bean.RoleEnum;
 
 public class MainPanel extends BasePanel {
 
+    //TODO:利用annotation 直接获取方法名或菜单名，简化basicPanel 的输入参数
     private MainPanel() {
     }
 

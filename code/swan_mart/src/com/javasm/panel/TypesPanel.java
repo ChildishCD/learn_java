@@ -20,7 +20,7 @@ public class TypesPanel extends BasePanel {
             System.out.println("请输入商品类型id");
             String id = scanner.next();
             if(id.matches("^\\d+$")){
-                //TODO
+                //TODO:查询后,显示树状面板,包含子商品类型
                 System.out.println(typesService.selectTypeById(Integer.valueOf(id)));
             }
             //询问是否结束当前面板
@@ -31,6 +31,10 @@ public class TypesPanel extends BasePanel {
     }
 
     public void updateType() {
+
+    }
+
+    public void insertType(){
 
     }
 
