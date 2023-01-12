@@ -1,2 +1,2 @@
 # learn_java
-Record my java learning.
+Recording my java learning.
