@@ -1,12 +1,13 @@
 package com.javasm.panel;
 
 import com.javasm.base.BasePanel;
+import com.javasm.service.ProductsService;
 
 import java.util.Stack;
 
 public class MembersPanel extends BasePanel {
-    public MembersPanel(Stack<String> navi) {
-        this.naviBar = navi;
+    public MembersPanel(BasePanel prePanel) {
+        super(prePanel, new ProductsService());
     }
     public void selectMember() {
 

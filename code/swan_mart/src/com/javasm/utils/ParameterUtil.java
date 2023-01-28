@@ -4,8 +4,6 @@ public class ParameterUtil {
 
     private ParameterUtil(){}
 
-    //TODO: 参数工具类--正则表达式匹配
-
     //可变参数  调用的时候，可以传入任意多的参数
     //方法内部 objects 被看作是一个 数组
     //给当前的方法 具体一下返回值的 意义

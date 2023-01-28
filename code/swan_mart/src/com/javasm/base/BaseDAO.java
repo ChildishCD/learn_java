@@ -23,21 +23,9 @@ import java.util.List;
 //所有 其他的DAO 继承我
 // 继承我的DAO 会拥有我的方法
 //有了规则，想使用 selectObjectById 方法 泛型 必须 加@Table注解和主键加@ID注解
-public class BaseDAO<T> {
+public class BaseDAO<T> extends Base<T>{
 
     //TODO:查询全部 不带分页,有待完善
-
-    //根据id删除
-    public void deleteById(Integer id){
-        //只能根据主键删除
-        String sql = "DELETE FROM "+getTableName()+" WHERE "+getIdName()+" = ?";
-        try {
-            DBHelper.getQueryRunner().update(sql,id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     //如果传入主键，更新，没有主键，添加
     public void saveOrUpdate(T t) {
         //找到主键
@@ -123,7 +111,17 @@ public class BaseDAO<T> {
                 throw new RuntimeException(e);
             }
         }
+    }
 
+    //根据id删除
+    public void deleteById(Integer id){
+        //只能根据主键删除
+        String sql = "DELETE FROM "+getTableName()+" WHERE "+getIdName()+" = ?";
+        try {
+            DBHelper.getQueryRunner().update(sql,id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     //查询单条
@@ -168,13 +166,6 @@ public class BaseDAO<T> {
         }
         String sql = "SELECT * FROM " + getTableName() + " LIMIT ?,?";
         return selectList(sql, start, size);
-    }
-
-
-    //获取 泛型T的 class对象
-    public Class<T> getTClass() {
-        Class<T> tClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        return tClass;
     }
 
     //获取表的名字

@@ -5,8 +5,8 @@ import com.javasm.bean.RoleEnum;
 
 public class MainPanel extends BasePanel {
 
-    //TODO:利用annotation 直接获取方法名或菜单名，简化basicPanel 的输入参数
     private MainPanel() {
+        super();
     }
 
     private static MainPanel mainPanel;
@@ -19,7 +19,7 @@ public class MainPanel extends BasePanel {
     }
 
     public void star() {
-        listPanel("登录",mainPanel, new String[][]{
+        listPanel("登录", mainPanel, new String[][]{
                 {"我是管理员\uD83D\uDD11", "adminLogin"},
                 {"我是收银员\uD83D\uDD11", "cashierLogin"}
         });
@@ -28,8 +28,7 @@ public class MainPanel extends BasePanel {
     private void cashierLogin() {
         System.out.println("请输入收银员密钥:");
         if (scanner.next().equals(RoleEnum.CASHIER.getPassWord())) {
-            System.out.println("用户登录/收银员面板");
-            listPanel("收银员面板",new DealsPanel(naviBar), new String[][]{
+            listPanel("收银员面板", new DealsPanel(mainPanel), new String[][]{
                     {"购买管理", "shopping"},
                     {"订单查询", "ordersCheck"},
                     {"排行统计", "productsRanking"}
@@ -42,7 +41,7 @@ public class MainPanel extends BasePanel {
     private void adminLogin() {
         System.out.println("请输入管理员密钥:");
         if (scanner.next().equals(RoleEnum.ADMIN.getPassWord())) {
-            listPanel("管理员面板",mainPanel, new String[][]{
+            listPanel("管理员面板", mainPanel, new String[][]{
                     {"商品类型管理", "productsTypesOperation"},
                     {"商品管理", "productsOperation"},
                     {"会员管理", "membersOperation"}
@@ -53,7 +52,7 @@ public class MainPanel extends BasePanel {
     }
 
     private void productsTypesOperation() {
-        listPanel("商品类型管理",new TypesPanel(naviBar), new String[][]{
+        listPanel("商品类型管理", new TypesPanel(mainPanel), new String[][]{
                 {"查询商品类型", "selectType"},
                 {"添加/修改商品类型", "updateType"},
                 {"删除商品类型", "deleteType"}
@@ -61,15 +60,16 @@ public class MainPanel extends BasePanel {
     }
 
     private void productsOperation() {
-        listPanel("商品管理",new ProductsPanel(naviBar), new String[][]{
+        listPanel("商品管理", new ProductsPanel(mainPanel), new String[][]{
                 {"查询商品", "selectProduct"},
-                {"添加/修改商品", "updateProduct"},
+                {"添加商品", "insertProduct"},
+                {"修改商品", "updateProduct"},
                 {"删除商品", "deleteProduct"}
         });
     }
 
     private void membersOperation() {
-        listPanel("会员管理",new MembersPanel(naviBar), new String[][]{
+        listPanel("会员管理", new MembersPanel(mainPanel), new String[][]{
                 {"查询会员", "selectMember"},
                 {"添加/修改会员", "updateMember"},
                 {"删除会员", "deleteMember"},
