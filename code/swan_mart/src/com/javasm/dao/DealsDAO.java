@@ -1,4 +1,7 @@
 package com.javasm.dao;
 
-public class DealsDAO {
+import com.javasm.base.BaseDAO;
+import com.javasm.bean.MemberOrdersModel;
+
+public class DealsDAO extends BaseDAO<MemberOrdersModel> {
 }

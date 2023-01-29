@@ -2,12 +2,16 @@ package com.javasm.service;
 
 import com.javasm.base.BaseService;
 import com.javasm.bean.ProductsModel;
+import com.javasm.bean.Shopping;
 import com.javasm.dao.ProductsDAO;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductsService extends BaseService<ProductsModel> {
+
     public ProductsService() {
         super(new ProductsDAO());
     }
@@ -28,12 +32,12 @@ public class ProductsService extends BaseService<ProductsModel> {
     }
 
     public void selectAllProducts(List<String> inputs) throws Exception {
-        Method method = dao.getClass().getMethod("selectAllProducts",Integer.class);
-        results = (List<ProductsModel>) method.invoke(dao,Integer.valueOf(inputs.get(0)));
+        Method method = dao.getClass().getMethod("selectAllProducts", Integer.class);
+        results = (List<ProductsModel>) method.invoke(dao, Integer.valueOf(inputs.get(0)));
     }
 
-    private void insertOne(List<String> inputs,ProductsModel product)throws Exception{
-        Method method = dao.getClass().getMethod("insertProduct",ProductsModel.class);
+    private void insertOne(List<String> inputs, ProductsModel product) throws Exception {
+        Method method = dao.getClass().getMethod("insertProduct", ProductsModel.class);
         product.setName(inputs.get(0));
         product.setTypeId(Integer.valueOf(inputs.get(1)));
         product.setInventory(Integer.valueOf(inputs.get(2)));
@@ -41,21 +45,21 @@ public class ProductsService extends BaseService<ProductsModel> {
         product.setState(Byte.valueOf(inputs.get(4)));
         product.setDiscount(0.9);
         product.setSpecs(inputs.get(5));
-        method.invoke(dao,product);
-        if(!checkResults()){
+        method.invoke(dao, product);
+        if (!checkResults()) {
             results.add(product);
         }
     }
 
     public void insertProduct(List<String> inputs) throws Exception {
-        if(checkInputs(inputs)){
-            insertOne(inputs,new ProductsModel());
+        if (checkInputs(inputs)) {
+            insertOne(inputs, new ProductsModel());
         }
     }
 
     public void updateProduct(List<String> inputs) throws Exception {
-        if(checkInputs(inputs)){
-            insertOne(inputs,results.get(0));
+        if (checkInputs(inputs)) {
+            insertOne(inputs, results.get(0));
         }
     }
 }

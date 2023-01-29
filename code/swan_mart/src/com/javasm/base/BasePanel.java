@@ -11,15 +11,20 @@ public class BasePanel<T> extends Base<T> {
     //每一个面板一个service
     protected BaseService service;
     //当前面板是否运行
-    private String go = "Y";
-    private Map<String, Method> methods = new HashMap<>();
-    private List<String> inputs = new ArrayList<>();
+    protected String go = "Y";
+    protected Map<String, Method> methods = new HashMap<>();
+    protected List<String> inputs = new ArrayList<>();
     //存放导航信息
     protected Stack<String> navbar;
 
     public BasePanel() {
         service = null;
         navbar = new Stack<>();
+    }
+
+    public BasePanel(BasePanel prePanel) {
+        this.service = null;
+        navbar = prePanel.navbar;
     }
 
     public BasePanel(BasePanel prePanel, BaseService service) {
@@ -95,7 +100,7 @@ public class BasePanel<T> extends Base<T> {
         while (checkGo(go)) {
             boolean flag = true;
             if (id) {
-                flag = idCheckPanel();
+                flag = idCheckPanel(service);
             } else {
                 AdBanner.printSeparator();
                 printNaviBanner();
@@ -151,12 +156,12 @@ public class BasePanel<T> extends Base<T> {
         initPanel();
     }
 
-    public boolean idCheckPanel() {
+    public boolean idCheckPanel(BaseService service) {
         boolean flag = false;
         navbar.push("检查id是否存在");
         AdBanner.printSeparator();
         printNaviBanner();
-        System.out.println("请输入id");
+        System.out.println("请输入id:");
         int id = Integer.parseInt(scanner.next());
         service.results.add(service.selectById(id));
         if (service.checkResults()) {
@@ -174,7 +179,7 @@ public class BasePanel<T> extends Base<T> {
     public void deletePanel() {
         navbar.push("删除");
         while (checkGo(go)) {
-            if (idCheckPanel()) {
+            if (idCheckPanel(service)) {
                 System.out.println("确定删除以上条目吗：(Y/N)");
                 if (checkGo(scanner.next())) {
                     service.deleteById(Integer.valueOf(inputs.get(0)));
