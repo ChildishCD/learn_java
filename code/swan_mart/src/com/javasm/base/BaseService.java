@@ -29,6 +29,10 @@ public class BaseService<T> extends Base<T> {
         dao.deleteById(id);
     }
 
+    public List<T> getResults() {
+        return results;
+    }
+
     public boolean checkInputs(List<String> inputs) {
         if (!ParameterUtil.checkParameter(inputs)) {
             return false;

@@ -71,7 +71,8 @@ public class MainPanel extends BasePanel {
     private void membersOperation() {
         listPanel("会员管理", new MembersPanel(mainPanel), new String[][]{
                 {"查询会员", "selectMember"},
-                {"添加/修改会员", "updateMember"},
+                {"添加会员", "insertMember"},
+                {"修改会员", "updateMember"},
                 {"删除会员", "deleteMember"},
                 {"会员充值", "chargingMember"}
         });

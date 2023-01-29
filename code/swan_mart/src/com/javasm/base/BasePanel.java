@@ -12,7 +12,6 @@ public class BasePanel<T> extends Base<T> {
     protected BaseService service;
     //当前面板是否运行
     private String go = "Y";
-    protected String go2 = "N";
     private Map<String, Method> methods = new HashMap<>();
     private List<String> inputs = new ArrayList<>();
     //存放导航信息
@@ -36,11 +35,10 @@ public class BasePanel<T> extends Base<T> {
     //初始化重复利用的变量
     protected void initPanel() {
         go = "Y";
-        go2 = "N";
         methods.clear();
     }
 
-    protected void clearPanel(){
+    protected void clearPanel() {
         inputs.clear();
         service.initService();
     }
@@ -88,55 +86,60 @@ public class BasePanel<T> extends Base<T> {
 
     //sql面板
     public void sqlPanel(String name, String methodName, String[] fieldNames) {
-        sqlPanel(name, methodName,false, false, fieldNames);
+        sqlPanel(name, methodName, false, false, fieldNames);
     }
 
-    public void sqlPanel(String name, String methodName,boolean id ,boolean page, String[] fieldNames) {
+    public void sqlPanel(String name, String methodName, boolean id, boolean page, String[] fieldNames) {
         naviBar.push(name);
         int start = 0;
         while (checkGo(go)) {
-            AdBanner.printSeparator();
-            printNaviBanner();
-            if(id){
-                idCheckPanel();
-            }
-            //输入数据
-            if (fieldNames.length != 0) {
-                for (String fieldName : fieldNames) {
-                    System.out.println("请输入" + fieldName + ":");
-                    inputs.add(scanner.next());
-                }
-            } else if (page) {
-                inputs.add(0, String.valueOf(start));
+            boolean flag = true;
+            if (id) {
+                flag = idCheckPanel();
+            } else {
+                AdBanner.printSeparator();
+                printNaviBanner();
             }
 
-            do {
-                //将数据传入service并输出
-                service.results.clear();
-                try {
-                    this.service.getClass().getMethod(methodName, List.class).invoke(service, inputs);
-                    if (service.checkResults()) {
-                        System.out.println("操作成功！");
-                        service.results.forEach(System.out::println);
+            if (flag) {
+                //输入数据
+                if (fieldNames.length != 0) {
+                    for (String fieldName : fieldNames) {
+                        System.out.println("请输入" + fieldName + ":");
+                        inputs.add(scanner.next());
+                    }
+                } else if (page) {
+                    inputs.add(0, String.valueOf(start));
+                }
+
+                do {
+                    //将数据传入service并输出
+                    try {
+                        this.service.getClass().getMethod(methodName, List.class).invoke(service, inputs);
+                        if (service.checkResults()) {
+                            System.out.println("操作成功！");
+                            service.results.forEach(System.out::println);
+                        } else {
+                            System.out.println("无结果！");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("输入有误！");
+                    }finally {
                         clearPanel();
-                    } else {
-                        System.out.println("无结果！");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("输入有误！");
-                }
-                if (page) {
-                    System.out.println("您希望查看下一页吗: (Y/N)");
-                    if (checkGo(scanner.next())) {
-                        start += 10;
-                        inputs.add(0, String.valueOf(start));
-                    } else {
-                        go = "N";
-                        break;
+                    if (page) {
+                        System.out.println("您希望查看下一页吗: (Y/N)");
+                        if (checkGo(scanner.next())) {
+                            start += 10;
+                            inputs.add(0, String.valueOf(start));
+                        } else {
+                            go = "N";
+                            break;
+                        }
                     }
-                }
-            } while (page);
+                } while (page);
+            }
 
             if (!page) {
                 //询问是否结束当前面板
@@ -148,7 +151,8 @@ public class BasePanel<T> extends Base<T> {
         initPanel();
     }
 
-    public void idCheckPanel() {
+    public boolean idCheckPanel() {
+        boolean flag = false;
         naviBar.push("检查id是否存在");
         AdBanner.printSeparator();
         printNaviBanner();
@@ -158,19 +162,19 @@ public class BasePanel<T> extends Base<T> {
         if (service.checkResults()) {
             System.out.println("操作成功！");
             service.results.forEach(System.out::println);
-            go2 = "Y";
-            inputs.add(String.valueOf(id));
+            flag = true;
         } else {
             System.out.println("无结果！");
+            clearPanel();
         }
         naviBar.pop();
+        return flag;
     }
 
     public void deletePanel() {
         naviBar.push("删除");
         while (checkGo(go)) {
-            idCheckPanel();
-            if (checkGo(go2)) {
+            if (idCheckPanel()) {
                 System.out.println("确定删除以上条目吗：(Y/N)");
                 if (checkGo(scanner.next())) {
                     service.deleteById(Integer.valueOf(inputs.get(0)));
