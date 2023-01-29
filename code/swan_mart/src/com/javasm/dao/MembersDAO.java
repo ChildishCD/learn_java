@@ -11,10 +11,10 @@ public class MembersDAO extends BaseDAO<MembersModel> {
         return super.selectObjectById(id);
     }
 
-    public MembersModel selectMemberByName(String name) {
+    public List<MembersModel> selectMemberByName(String name) {
         String sql = "SELECT * FROM " + getTableName() + " WHERE name like ?";
         name = "%" + name + "%";
-        return selectObject(sql, name);
+        return selectList(sql, name);
     }
 
     public List<MembersModel> selectAllMembers(Integer start){

@@ -54,7 +54,8 @@ public class MainPanel extends BasePanel {
     private void productsTypesOperation() {
         listPanel("商品类型管理", new TypesPanel(mainPanel), new String[][]{
                 {"查询商品类型", "selectType"},
-                {"添加/修改商品类型", "updateType"},
+                {"添加商品类型", "insertType"},
+                {"修改商品类型", "updateType"},
                 {"删除商品类型", "deleteType"}
         });
     }

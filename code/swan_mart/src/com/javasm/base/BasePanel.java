@@ -15,21 +15,21 @@ public class BasePanel<T> extends Base<T> {
     private Map<String, Method> methods = new HashMap<>();
     private List<String> inputs = new ArrayList<>();
     //存放导航信息
-    protected Stack<String> naviBar;
+    protected Stack<String> navbar;
 
     public BasePanel() {
         service = null;
-        naviBar = new Stack<>();
+        navbar = new Stack<>();
     }
 
     public BasePanel(BasePanel prePanel, BaseService service) {
         this.service = service;
-        naviBar = prePanel.naviBar;
+        navbar = prePanel.navbar;
     }
 
     //打印导航栏信息
     protected void printNaviBanner() {
-        System.out.println("您目前在: " + String.join("/", naviBar));
+        System.out.println("您目前在: " + String.join("/", navbar));
     }
 
     //初始化重复利用的变量
@@ -46,7 +46,7 @@ public class BasePanel<T> extends Base<T> {
     //一般的列表式面板
     public void listPanel(String name, BasePanel p, String[][] info) {
         //想导航中添加当前面板名
-        naviBar.push(name);
+        navbar.push(name);
         while (checkGo(go)) {
             //输出广告
             AdBanner.printSeparator();
@@ -80,7 +80,7 @@ public class BasePanel<T> extends Base<T> {
             }
         }
         //回退导航
-        naviBar.pop();
+        navbar.pop();
         initPanel();
     }
 
@@ -90,7 +90,7 @@ public class BasePanel<T> extends Base<T> {
     }
 
     public void sqlPanel(String name, String methodName, boolean id, boolean page, String[] fieldNames) {
-        naviBar.push(name);
+        navbar.push(name);
         int start = 0;
         while (checkGo(go)) {
             boolean flag = true;
@@ -147,13 +147,13 @@ public class BasePanel<T> extends Base<T> {
                 go = scanner.next();
             }
         }
-        naviBar.pop();
+        navbar.pop();
         initPanel();
     }
 
     public boolean idCheckPanel() {
         boolean flag = false;
-        naviBar.push("检查id是否存在");
+        navbar.push("检查id是否存在");
         AdBanner.printSeparator();
         printNaviBanner();
         System.out.println("请输入id");
@@ -167,12 +167,12 @@ public class BasePanel<T> extends Base<T> {
             System.out.println("无结果！");
             clearPanel();
         }
-        naviBar.pop();
+        navbar.pop();
         return flag;
     }
 
     public void deletePanel() {
-        naviBar.push("删除");
+        navbar.push("删除");
         while (checkGo(go)) {
             if (idCheckPanel()) {
                 System.out.println("确定删除以上条目吗：(Y/N)");
@@ -185,7 +185,7 @@ public class BasePanel<T> extends Base<T> {
             System.out.println("您希望继续吗: (Y/N)");
             go = scanner.next();
         }
-        naviBar.pop();
+        navbar.pop();
         initPanel();
     }
 

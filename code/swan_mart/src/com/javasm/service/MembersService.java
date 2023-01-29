@@ -23,7 +23,7 @@ public class MembersService extends BaseService<MembersModel> {
     public void selectMemberByName(List<String> inputs) throws Exception {
         if (checkInputs(inputs)) {
             Method method = dao.getClass().getMethod("selectMemberByName", String.class);
-            results.add((MembersModel) method.invoke(dao, inputs.get(0)));
+            results = (List<MembersModel>)method.invoke(dao, inputs.get(0));
         }
     }
 

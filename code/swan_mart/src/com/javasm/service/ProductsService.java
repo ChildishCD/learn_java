@@ -23,7 +23,7 @@ public class ProductsService extends BaseService<ProductsModel> {
     public void selectProductByName(List<String> inputs) throws Exception {
         if (checkInputs(inputs)) {
             Method method = dao.getClass().getMethod("selectProductByName", String.class);
-            results.add((ProductsModel) method.invoke(dao, inputs.get(0)));
+            results = (List<ProductsModel>) method.invoke(dao, inputs.get(0));
         }
     }
 

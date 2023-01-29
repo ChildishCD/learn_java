@@ -11,10 +11,10 @@ public class ProductsDAO extends BaseDAO<ProductsModel> {
         return super.selectObjectById(id);
     }
 
-    public ProductsModel selectProductByName(String name) {
+    public List<ProductsModel> selectProductByName(String name) {
         String sql = "SELECT * FROM " + getTableName() + " WHERE name like ?";
         name = "%" + name + "%";
-        return selectObject(sql, name);
+        return selectList(sql, name);
     }
 
     public List<ProductsModel> selectAllProducts(Integer start){
