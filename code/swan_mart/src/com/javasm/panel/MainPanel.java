@@ -1,7 +1,7 @@
 package com.javasm.panel;
 
 import com.javasm.base.BasePanel;
-import com.javasm.bean.RoleEnum;
+import com.javasm.constant.RoleEnum;
 
 public class MainPanel extends BasePanel {
 

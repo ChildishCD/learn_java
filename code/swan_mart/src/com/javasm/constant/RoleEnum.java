@@ -1,4 +1,4 @@
-package com.javasm.bean;
+package com.javasm.constant;
 
 import lombok.Getter;
 

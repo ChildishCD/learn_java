@@ -57,6 +57,12 @@ public class ProductsService extends BaseService<ProductsModel> {
         }
     }
 
+    public void insertProductList(List<ProductsModel> productsList) throws Exception{
+        if (productsList != null || !productsList.isEmpty()){
+            dao.updateList(productsList);
+        }
+    }
+
     public void updateProduct(List<String> inputs) throws Exception {
         if (checkInputs(inputs)) {
             insertOne(inputs, results.get(0));

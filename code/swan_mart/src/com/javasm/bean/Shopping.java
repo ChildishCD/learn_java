@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class Shopping{
+public class Shopping {
     String name;
     Integer count;
     ProductsModel product;
@@ -20,10 +20,18 @@ public class Shopping{
         this.name = product.getName();
     }
 
+    public Double getPrice() {
+        return product.getPrice() * product.getDiscount() * count;
+    }
+
     @Override
     public String toString() {
-        return " 商品id: "+ product.getId() +
-                " 商品名称: "+ this.name +
-                " 商品数量: "+ this.count;
+        return " 商品id: " + product.getId() +
+                " 商品名称: " + this.name +
+                " 商品数量: " + this.count;
+    }
+
+    public static Map<Integer, Shopping> shotCar(){
+        return new HashMap<>();
     }
 }

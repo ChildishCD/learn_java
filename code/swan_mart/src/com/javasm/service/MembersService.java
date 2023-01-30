@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class MembersService extends BaseService<MembersModel> {
+
+    //TODO:密码加密
     public MembersService() {
         super(new MembersDAO());
     }

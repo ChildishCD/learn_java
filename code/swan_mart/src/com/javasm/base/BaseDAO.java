@@ -9,23 +9,141 @@ import org.apache.commons.dbutils.GenerousBeanProcessor;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
 //所有 其他的DAO 继承我
 // 继承我的DAO 会拥有我的方法
 //有了规则，想使用 selectObjectById 方法 泛型 必须 加@Table注解和主键加@ID注解
-public class BaseDAO<T> extends Base<T>{
+public class BaseDAO<T> extends Base<T> {
 
-    //TODO:查询全部 不带分页,有待完善
+    //TODO:回滚
+
+    public void updateList(List<T> tList){
+        Class clazz = getTClass();
+        Field[] fields = clazz.getDeclaredFields();
+        Object id = null;
+        String idName = null;
+        StringBuilder sql = new StringBuilder();
+        StringBuilder endsql = new StringBuilder();
+        List<Object> paramList = new ArrayList<>();
+        Object[][] parameters = new Object[tList.size()][fields.length];
+        sql.append("UPDATE ");
+        sql.append(getTableName());
+        sql.append(" SET ");
+        int i = 0;
+        for (T t : tList) {
+            for (Field field : fields) {
+                ID idAnnotation = field.getAnnotation(ID.class);
+                if (idAnnotation == null) {//不要id
+                    Column columnAnnotation = field.getAnnotation(Column.class);
+                    if (columnAnnotation != null) {
+                        paramList.add(getterMethod(t, field.getName()));
+                    }
+                }
+            }
+            for (Field field : fields) {
+                ID idAnnotation = field.getAnnotation(ID.class);
+                if (idAnnotation != null) {//主键
+                    //调用getter方法 获取主键的值
+                    id = getterMethod(t, field.getName());
+                    idName = idAnnotation.value();
+                    break;
+                }
+            }
+            paramList.add(id);
+            parameters[i] = paramList.toArray(new Object[0]);
+            paramList.clear();
+            i++;
+        }
+
+        i=0;
+        for (Field field : fields) {
+            ID idAnnotation = field.getAnnotation(ID.class);
+            if (idAnnotation == null) {//不要id
+                Column columnAnnotation = field.getAnnotation(Column.class);
+                if (columnAnnotation != null) {
+                    String columnName = columnAnnotation.value();
+                    if (i != 0) {
+                        sql.append(",");
+                    }
+                    sql.append(columnName);
+                    sql.append("=");
+                    sql.append("?");
+                    i++;
+                }
+            }
+        }
+        sql.append(" WHERE ");
+        sql.append(idName);
+        sql.append("= ?");
+
+        try {
+            DBHelper.getQueryRunner().batch(sql.toString(), parameters);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveListWithoutId(List<T> tList) {
+        Class clazz = getTClass();
+        Field[] fields = clazz.getDeclaredFields();
+        StringBuilder sql = new StringBuilder();
+        StringBuilder endsql = new StringBuilder();
+        List<Object> paramList = new ArrayList<>();
+        Object[][] parameters = new Object[tList.size()][fields.length];
+        //INSERT INTO goods ( name,price) VALUES (?,?)
+        sql.append("INSERT INTO ");
+        sql.append(getTableName());
+        sql.append(" ( ");
+        int i = 0;
+        for (Field field : fields) {
+            ID idAnnotation = field.getAnnotation(ID.class);
+            if (idAnnotation == null) {//不要id
+                Column columnAnnotation = field.getAnnotation(Column.class);
+                if (columnAnnotation != null) {
+                    String columnName = columnAnnotation.value();
+                    if (i != 0) {
+                        sql.append(",");
+                        endsql.append(",");
+                    }
+                    sql.append(columnName);
+                    endsql.append("?");
+                    i++;
+                }
+            }
+        }
+        sql.append(" ) VALUES (");
+        sql.append(endsql);
+        sql.append(" )");
+
+        i = 0;
+        for (T t : tList) {
+            for (Field field : fields) {
+                ID idAnnotation = field.getAnnotation(ID.class);
+                if (idAnnotation == null) {//不要id
+                    Column columnAnnotation = field.getAnnotation(Column.class);
+                    if (columnAnnotation != null) {
+                        paramList.add(getterMethod(t, field.getName()));
+                    }
+                }
+            }
+            parameters[i] = paramList.toArray(new Object[0]);
+            paramList.clear();
+            i++;
+        }
+
+        try {
+            DBHelper.getQueryRunner().batch(sql.toString(), parameters);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     //如果传入主键，更新，没有主键，添加
     public void saveOrUpdate(T t) {
         //找到主键
@@ -46,19 +164,19 @@ public class BaseDAO<T> extends Base<T>{
         StringBuilder sql = new StringBuilder();
         StringBuilder endsql = new StringBuilder();
         List<Object> paramList = new ArrayList<>();
-        if (id == null){
+        if (id == null) {
             //INSERT INTO goods ( name,price) VALUES (?,?)
             sql.append("INSERT INTO ");
             sql.append(getTableName());
             sql.append(" ( ");
             int i = 0;
-            for (Field field : fields){
+            for (Field field : fields) {
                 ID idAnnotation = field.getAnnotation(ID.class);
-                if (idAnnotation == null){//不要id
+                if (idAnnotation == null) {//不要id
                     Column columnAnnotation = field.getAnnotation(Column.class);
-                    if (columnAnnotation!=null){
+                    if (columnAnnotation != null) {
                         String columnName = columnAnnotation.value();
-                        if (i!=0){
+                        if (i != 0) {
                             sql.append(",");
                             endsql.append(",");
                         }
@@ -73,24 +191,24 @@ public class BaseDAO<T> extends Base<T>{
             sql.append(endsql);
             sql.append(" )");
             try {
-                DBHelper.getQueryRunner().update(sql.toString(),paramList.toArray(new Object[0]));
+                DBHelper.getQueryRunner().update(sql.toString(), paramList.toArray(new Object[0]));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        }else {
+        } else {
             //修改
             //UPDATE goods SET goods_name='测试' WHERE id = 11;
             sql.append("UPDATE ");
             sql.append(getTableName());
             sql.append(" SET ");
             int i = 0;
-            for (Field field : fields){
+            for (Field field : fields) {
                 ID idAnnotation = field.getAnnotation(ID.class);
-                if (idAnnotation == null){//不要id
+                if (idAnnotation == null) {//不要id
                     Column columnAnnotation = field.getAnnotation(Column.class);
-                    if (columnAnnotation!=null){
+                    if (columnAnnotation != null) {
                         String columnName = columnAnnotation.value();
-                        if (i!=0){
+                        if (i != 0) {
                             sql.append(",");
                         }
                         sql.append(columnName);
@@ -106,7 +224,7 @@ public class BaseDAO<T> extends Base<T>{
             sql.append("= ?");
             paramList.add(id);
             try {
-                DBHelper.getQueryRunner().update(sql.toString(),paramList.toArray(paramList.toArray(new Object[0])));
+                DBHelper.getQueryRunner().update(sql.toString(), paramList.toArray(paramList.toArray(new Object[0])));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -114,11 +232,11 @@ public class BaseDAO<T> extends Base<T>{
     }
 
     //根据id删除
-    public void deleteById(Integer id){
+    public void deleteById(Integer id) {
         //只能根据主键删除
-        String sql = "DELETE FROM "+getTableName()+" WHERE "+getIdName()+" = ?";
+        String sql = "DELETE FROM " + getTableName() + " WHERE " + getIdName() + " = ?";
         try {
-            DBHelper.getQueryRunner().update(sql,id);
+            DBHelper.getQueryRunner().update(sql, id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -201,7 +319,7 @@ public class BaseDAO<T> extends Base<T>{
     //调用 t对象 filedName属性的 getter方法
     public Object getterMethod(T t, String filedName) {
         String methodName = "get" +
-                filedName.substring(0,1).toUpperCase()+
+                filedName.substring(0, 1).toUpperCase() +
                 filedName.substring(1);
         try {
             Method method = getTClass().getMethod(methodName);

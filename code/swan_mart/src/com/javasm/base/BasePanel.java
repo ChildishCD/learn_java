@@ -99,11 +99,10 @@ public class BasePanel<T> extends Base<T> {
         int start = 0;
         while (checkGo(go)) {
             boolean flag = true;
+            AdBanner.printSeparator();
+            printNaviBanner();
             if (id) {
                 flag = idCheckPanel(service);
-            } else {
-                AdBanner.printSeparator();
-                printNaviBanner();
             }
 
             if (flag) {
@@ -157,10 +156,11 @@ public class BasePanel<T> extends Base<T> {
     }
 
     public boolean idCheckPanel(BaseService service) {
+        service.initService();
         boolean flag = false;
-        navbar.push("检查id是否存在");
-        AdBanner.printSeparator();
-        printNaviBanner();
+//        navbar.push("检查id是否存在");
+//        AdBanner.printSeparator();
+//        printNaviBanner();
         System.out.println("请输入id:");
         int id = Integer.parseInt(scanner.next());
         service.results.add(service.selectById(id));
@@ -172,12 +172,14 @@ public class BasePanel<T> extends Base<T> {
             System.out.println("无结果！");
             clearPanel();
         }
-        navbar.pop();
+//        navbar.pop();
         return flag;
     }
 
     public void deletePanel() {
         navbar.push("删除");
+        AdBanner.printSeparator();
+        printNaviBanner();
         while (checkGo(go)) {
             if (idCheckPanel(service)) {
                 System.out.println("确定删除以上条目吗：(Y/N)");
