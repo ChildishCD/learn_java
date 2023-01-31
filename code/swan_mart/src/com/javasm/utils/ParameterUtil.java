@@ -1,5 +1,7 @@
 package com.javasm.utils;
 
+import java.util.List;
+
 public class ParameterUtil {
 
     private ParameterUtil(){}
@@ -17,6 +19,21 @@ public class ParameterUtil {
                 if (o.toString().isEmpty()){
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+
+    public static boolean checkList(List<Object> list){
+        if (!ParameterUtil.checkParameter(list)) {
+            return false;
+        }
+        if(list.isEmpty()){
+            return false;
+        }
+        for (Object t : list) {
+            if (!ParameterUtil.checkParameter(t)) {
+                return false;
             }
         }
         return true;

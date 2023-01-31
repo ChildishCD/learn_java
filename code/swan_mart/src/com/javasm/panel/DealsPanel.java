@@ -4,13 +4,12 @@ import com.javasm.banner.AdBanner;
 import com.javasm.base.BasePanel;
 import com.javasm.bean.MemberOrdersModel;
 import com.javasm.bean.ProductsModel;
-import com.javasm.bean.Shopping;
+import com.javasm.vo.ShoppingVO;
 import com.javasm.service.DealsService;
 import com.javasm.service.MembersService;
 import com.javasm.service.ProductsService;
 
 import java.util.Arrays;
-import java.util.Map;
 
 public class DealsPanel extends BasePanel<MemberOrdersModel> {
     //    private DealsService service = new DealsService();
@@ -132,7 +131,7 @@ public class DealsPanel extends BasePanel<MemberOrdersModel> {
             if (idStr.matches("^[0-9]+$") && getService().shoppingCar.containsKey(Integer.valueOf(idStr))) {
                 var id = Integer.valueOf(idStr);
                 System.out.println("您希望删除以下商品吗：(Y/N)");
-                Shopping shopping = getService().shoppingCar.get(id);
+                ShoppingVO shopping = getService().shoppingCar.get(id);
                 System.out.println(shopping);
                 if (checkGo(scanner.next())) {
                     getService().shoppingCar.remove(id);
@@ -162,7 +161,7 @@ public class DealsPanel extends BasePanel<MemberOrdersModel> {
             if (idStr.matches("^[0-9]+$") && getService().shoppingCar.containsKey(Integer.valueOf(idStr))) {
                 var id = Integer.valueOf(idStr);
                 System.out.println("目前数量如下：");
-                Shopping shopping = getService().shoppingCar.get(id);
+                ShoppingVO shopping = getService().shoppingCar.get(id);
                 System.out.println(shopping);
                 while (true) {
                     System.out.println("请输入商品数量：(输入 0 删除商品)");
@@ -210,7 +209,7 @@ public class DealsPanel extends BasePanel<MemberOrdersModel> {
                     if (num.matches("^[0-9]+$")) {
                         var n = Integer.parseInt(num);
                         if (n > 0 && n < product.getInventory()) {
-                            getService().shoppingCar.put(product.getId(), new Shopping(n, product));
+                            getService().shoppingCar.put(product.getId(), new ShoppingVO(n, product));
                             clearPanel();
                             System.out.println("添加成功！");
                             break;
@@ -260,6 +259,25 @@ public class DealsPanel extends BasePanel<MemberOrdersModel> {
 
 
     public void productsRanking() {
+        listPanel("排行统计", this, new String[][]{
+                {"月份统计(仅今年)", "monthRanking"},
+                {"商品类型统计", "typeRanking"},
+                {"全部统计", "allRanking"}
+        });
+    }
 
+    public void monthRanking(){
+        sqlPanel("月份统计(仅今年)", "selectRankByMonth", true, new String[]{
+                "月份"
+        });
+    }
+    public void typeRanking(){
+        sqlPanel("商品类型统计", "selectRankByType",true, new String[]{
+                "商品类型id"
+        });
+    }
+    public void allRanking(){
+        sqlPanel("全部统计", "selectRank",true, new String[]{
+        });
     }
 }

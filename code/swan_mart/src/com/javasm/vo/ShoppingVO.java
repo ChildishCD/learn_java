@@ -1,6 +1,8 @@
-package com.javasm.bean;
+package com.javasm.vo;
 
-import lombok.AllArgsConstructor;
+import com.javasm.base.BaseVO;
+import com.javasm.bean.MemberOrdersModel;
+import com.javasm.bean.ProductsModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +11,12 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class Shopping {
+public class ShoppingVO extends BaseVO<MemberOrdersModel> {
     String name;
     Integer count;
     ProductsModel product;
 
-    public Shopping(Integer count, ProductsModel product) {
+    public ShoppingVO(Integer count, ProductsModel product) {
         this.count = count;
         this.product = product;
         this.name = product.getName();
@@ -31,7 +33,7 @@ public class Shopping {
                 " 商品数量: " + this.count;
     }
 
-    public static Map<Integer, Shopping> shotCar(){
+    public static Map<Integer, ShoppingVO> shotCar(){
         return new HashMap<>();
     }
 }

@@ -32,7 +32,6 @@ public class ProductsPanel extends BasePanel<ProductsModel> {
 
     public void totalSelect() {
         sqlPanel("查询全部商品", "selectAllProducts", false, true, new String[]{
-
         });
     }
 

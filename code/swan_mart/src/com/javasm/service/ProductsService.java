@@ -2,13 +2,10 @@ package com.javasm.service;
 
 import com.javasm.base.BaseService;
 import com.javasm.bean.ProductsModel;
-import com.javasm.bean.Shopping;
 import com.javasm.dao.ProductsDAO;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ProductsService extends BaseService<ProductsModel> {
 

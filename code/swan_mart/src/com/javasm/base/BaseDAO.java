@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //所有 其他的DAO 继承我
 // 继承我的DAO 会拥有我的方法
@@ -23,7 +24,8 @@ public class BaseDAO<T> extends Base<T> {
 
     //TODO:回滚
 
-    public void updateList(List<T> tList){
+
+    public void updateList(List<T> tList) {
         Class clazz = getTClass();
         Field[] fields = clazz.getDeclaredFields();
         Object id = null;
@@ -61,7 +63,7 @@ public class BaseDAO<T> extends Base<T> {
             i++;
         }
 
-        i=0;
+        i = 0;
         for (Field field : fields) {
             ID idAnnotation = field.getAnnotation(ID.class);
             if (idAnnotation == null) {//不要id
@@ -267,6 +269,12 @@ public class BaseDAO<T> extends Base<T> {
     public T selectObjectById(Integer id) {
         String sql = "SELECT * FROM " + getTableName() + " WHERE " + getIdName() + " = ?";
         return selectObject(sql, id);
+    }
+
+    public List<T> selectObjectByIdList(List<Integer> idList) {
+        String ids = idList.stream().map(String::valueOf).collect(Collectors.joining(","));
+        String sql = "SELECT * FROM " + getTableName() + " WHERE " + getIdName() + " in (" + ids + ") ORDER BY " + getIdName();
+        return selectList(sql);
     }
 
     //分页查询

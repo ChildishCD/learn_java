@@ -14,7 +14,6 @@ public class TypesService extends BaseService<ProductsTypesModel> {
         super(new TypesDAO());
     }
 
-
     public void selectTypeById(List<String> inputs) throws Exception {
         if (checkInputs(inputs)) {
             Method method = dao.getClass().getMethod("selectTypeById", Integer.class);

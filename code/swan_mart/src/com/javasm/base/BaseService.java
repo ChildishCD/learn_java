@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @NoArgsConstructor
 public class BaseService<T> extends Base<T> {
     public List<T> results = new ArrayList<>();
+    public List<BaseVO> voResults = new ArrayList<>();
     protected BaseDAO dao;
 
     public BaseService(BaseDAO dao) {
@@ -19,6 +21,7 @@ public class BaseService<T> extends Base<T> {
 
     public void initService(){
         results.clear();
+        voResults.clear();
     }
 
     public T selectById(Integer id){
@@ -45,18 +48,20 @@ public class BaseService<T> extends Base<T> {
         return true;
     }
 
+
+
     public boolean checkResults(){
-        if (!ParameterUtil.checkParameter(results)) {
-            return false;
-        }
-        if(results.isEmpty()){
-            return false;
-        }
-        for (T t : results) {
-            if (!ParameterUtil.checkParameter(t)) {
-                return false;
-            }
-        }
-        return true;
+        return ParameterUtil.checkList((List<Object>) results);
+    }
+    public boolean checkVOResults(){
+        return ParameterUtil.checkList(Collections.singletonList(voResults));
+    }
+
+    public void showResults(){
+        results.forEach(System.out::println);
+    }
+
+    public void showVOs(){
+        voResults.forEach(System.out::println);
     }
 }

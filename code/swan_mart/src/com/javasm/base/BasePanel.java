@@ -91,10 +91,18 @@ public class BasePanel<T> extends Base<T> {
 
     //sql面板
     public void sqlPanel(String name, String methodName, String[] fieldNames) {
-        sqlPanel(name, methodName, false, false, fieldNames);
+        sqlPanel(name, methodName, false, false,false, fieldNames);
     }
 
     public void sqlPanel(String name, String methodName, boolean id, boolean page, String[] fieldNames) {
+        sqlPanel(name, methodName, id, page,false, fieldNames);
+    }
+
+    public void sqlPanel(String name, String methodName, boolean vo, String[] fieldNames) {
+        sqlPanel(name, methodName, false, false,vo, fieldNames);
+    }
+
+    public void sqlPanel(String name, String methodName, boolean id, boolean page,  boolean vo, String[] fieldNames) {
         navbar.push(name);
         int start = 0;
         while (checkGo(go)) {
@@ -112,17 +120,21 @@ public class BasePanel<T> extends Base<T> {
                         System.out.println("请输入" + fieldName + ":");
                         inputs.add(scanner.next());
                     }
-                } else if (page) {
+                } else {
                     inputs.add(0, String.valueOf(start));
                 }
 
                 do {
                     //将数据传入service并输出
                     try {
-                        this.service.getClass().getMethod(methodName, List.class).invoke(service, inputs);
-                        if (service.checkResults()) {
+                        Method m = this.service.getClass().getMethod(methodName, List.class);
+                        m.invoke(service, inputs);
+                        if(vo && service.checkVOResults()){
                             System.out.println("操作成功！");
-                            service.results.forEach(System.out::println);
+                            service.showVOs();
+                        }else if (service.checkResults()) {
+                            System.out.println("操作成功！");
+                            service.showResults();
                         } else {
                             System.out.println("无结果！");
                         }
@@ -166,7 +178,7 @@ public class BasePanel<T> extends Base<T> {
         service.results.add(service.selectById(id));
         if (service.checkResults()) {
             System.out.println("操作成功！");
-            service.results.forEach(System.out::println);
+            service.showResults();
             flag = true;
         } else {
             System.out.println("无结果！");
