@@ -1,5 +1,5 @@
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Test {
     public static void main(String[] args) {
@@ -8,6 +8,20 @@ public class Test {
 
 //        System.out.println(Arrays.toString(twoSum(nums, target)));
 //        System.out.println(map);
+        printTriangle(5);
+    }
+
+    public static void printTriangle(int rowCount) {
+        for (int i = 1; i <= rowCount; i++) {
+            StringBuilder row = new StringBuilder();
+            for (int j = rowCount - i; j > 0; j--) {
+                row.append(" ");
+            }
+            for (int j = i; j > 0; j--) {
+                row.append("* ");
+            }
+            System.out.println(row);
+        }
     }
 
     public static int search(int[] nums, int target) {
