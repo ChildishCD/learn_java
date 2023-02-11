@@ -72,7 +72,9 @@ public class Demo {
         //避免sql注入
         //  如果直接传入sql语句的字符串,可能会根据输入的信息自己写出sql语句, 同样能够执行
         //不能处理Like语句
+        
         try {
+            //获取driver
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);

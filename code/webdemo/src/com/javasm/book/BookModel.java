@@ -3,8 +3,10 @@ package com.javasm.book;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
+@ToString
 public class BookModel {
     private Integer bookId;
     private String bookName;

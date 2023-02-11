@@ -55,13 +55,7 @@ public class BookServlet extends HttpServlet {
 //            throw new RuntimeException(e);
         }
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        resp.sendRedirect("file:///C:/Users/Administrator/Desktop/learn_web/code/2_1vue-intro/1_2_from-test.html");
+//        resp.sendRedirect("file:///C:/Users/Administrator/Desktop/learn_web/code/2_1vue-intro/1_2_from-test.html");
         System.out.println("====结束====");
     }
 }
